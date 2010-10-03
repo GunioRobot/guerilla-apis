@@ -61,15 +61,14 @@ describe GuerillaAPI::Apps::Bysykkel::V1 do
           result = JSON.parse(last_response.body)
           result['racks'].should == []
         end
+    end
 
-        it 'caches forever' do
-          Bysykkel::Rack.stub(:find).and_return []
-          get '/api/bysykkel/v1/racks/'
-          last_response.headers['Cache-Control'].should == "public, max-age=30000000"
-        end     
-      
-
-   
-    end    
+    context '(/racks/)' do
+      it 'caches forever' do
+        Bysykkel::Rack.stub(:find).and_return []
+        get '/api/bysykkel/v1/racks/'
+        last_response.headers['Cache-Control'].should == "public, max-age=30000000"
+      end     
+    end
   end
 end
