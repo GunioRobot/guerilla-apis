@@ -3,7 +3,7 @@ require File.expand_path('../../spec_helper', __FILE__)
 describe GuerillaAPI::Apps::Bysykkel::V1 do
   include Rack::Test::Methods
   include RackupApp
-  
+
   before(:all) do
     @mock_rack = Bysykkel::Rack.new({
       :name => 'Slottet',
@@ -19,26 +19,26 @@ describe GuerillaAPI::Apps::Bysykkel::V1 do
     Time.stub(:now).and_return @time
 
   end
-  
+
   context 'searching for racks' do
-    
+
     context '(/racks/:id)' do
       before(:all) do
         Bysykkel::Rack.stub(:find).and_return []
       end
-      
+
       it 'delivers json in utf-8' do
         get '/api/bysykkel/v1/racks/1'
         last_response.headers['Content-Type'].should == "application/json;charset=utf-8"
       end
-      
-      
+
+
       it 'delivers JSONP when requested' do
         get '/api/bysykkel/v1/racks/1?callback=func'
         last_response.headers['Content-Type'].should == "application/javascript;charset=utf-8"
         last_response.body.should =~ /^func\(/
       end
-      
+
       it 'looks up racks by id and returns rack array' do
           Bysykkel::Rack.stub(:find).and_return [@mock_rack]
           get '/api/bysykkel/v1/racks/1'
@@ -68,7 +68,7 @@ describe GuerillaAPI::Apps::Bysykkel::V1 do
         Bysykkel::Rack.stub(:find).and_return []
         get '/api/bysykkel/v1/racks/'
         last_response.headers['Cache-Control'].should == "public, max-age=30000000"
-      end     
+      end
     end
   end
 end

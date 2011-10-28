@@ -5,7 +5,7 @@ require "bundler"
 Bundler.setup
 Bundler.require(:test)
 
-module RackupApp  
+module RackupApp
   # Return the app forged by config.ru
   def app
     Rack::Builder.parse_file(File.expand_path('../../config.ru', __FILE__))[0]

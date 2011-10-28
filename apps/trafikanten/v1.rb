@@ -19,7 +19,7 @@ class GuerillaAPI::Apps::Trafikanten::V1 < Sinatra::Base
 
     find_route_by_date(from, to, time)
   end
-  
+
   # Search for stations
   #
   # TODO: Cache also in Memcache if more params than :name is sent
@@ -31,7 +31,7 @@ class GuerillaAPI::Apps::Trafikanten::V1 < Sinatra::Base
   end
 
   private
-  
+
   def route_to_json(route)
     {
       'source' => 'trafikanten.no',
@@ -49,17 +49,17 @@ class GuerillaAPI::Apps::Trafikanten::V1 < Sinatra::Base
       }
     }.to_json
   end
-  
+
   def cache_forever
     expires 30000000, :public
   end
-  
+
   def find_route(from, to, time = Time.now)
     from  = TrafikantenTravel::Station.new({:id => from})
     to    = TrafikantenTravel::Station.new({:id => to})
     TrafikantenTravel::Route.find(from, to, time)
   end
-  
+
   def find_route_by_date(from, to, time)
     begin
       route = find_route(from, to, time)
@@ -69,7 +69,7 @@ class GuerillaAPI::Apps::Trafikanten::V1 < Sinatra::Base
       content_type 'text/plain', :charset => 'utf-8'
       return e.message
     end
-    
+
     # No route found.
     if route.steps.size == 0
       # Pretty sure this lasts forever
@@ -77,7 +77,7 @@ class GuerillaAPI::Apps::Trafikanten::V1 < Sinatra::Base
       status 404
       return nil
     end
-    
+
     # Cache intil the next departure. Include the minute for the departure
     unless response.headers['Cache-Control']
        route.steps.each do |step|
@@ -87,15 +87,15 @@ class GuerillaAPI::Apps::Trafikanten::V1 < Sinatra::Base
         end
       end
     end
-    
+
     route_to_json(route)
   end
-  
+
   def find_stations(name)
     stations = TrafikantenTravel::Station.find_by_name(name)
     {
       :source => 'trafikanten.no',
-      :stations => stations.map do |station| 
+      :stations => stations.map do |station|
       has_geo = station.lat && station.lng
       { :name => station.name,
         :id => station.id,
@@ -104,5 +104,5 @@ class GuerillaAPI::Apps::Trafikanten::V1 < Sinatra::Base
       end
     }.to_json
   end
-  
+
 end

@@ -21,7 +21,7 @@ class GuerillaAPI::Apps::Bysykkel::V1 < Sinatra::Base
 
 
   private
-  
+
   def cache_forever
     expires 30000000, :public
   end
@@ -29,7 +29,7 @@ class GuerillaAPI::Apps::Bysykkel::V1 < Sinatra::Base
   def payload(racks)
     {
       :source => 'smartbikeportal.clearchannel.no',
-      :racks => racks.map do |rack| 
+      :racks => racks.map do |rack|
       has_geo = rack.lat && rack.lng
       {
         'id' => rack.id,
@@ -42,5 +42,5 @@ class GuerillaAPI::Apps::Bysykkel::V1 < Sinatra::Base
       end
     }.to_json
   end
-  
+
 end
